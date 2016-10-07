@@ -7,7 +7,7 @@
 \usepackage{mathpazo}
 \usepackage{tcolorbox}
 \usepackage{soul}
-
+\usepackage{algorithm,algorithmic}
 
 % \definecolor{red}{rgb}{1,0,0}
 
@@ -20,12 +20,16 @@
 \DeclareMathOperator{\polylog}{polylog}
 \DeclareMathOperator*{\argmin}{argmin}
 \DeclareMathOperator*{\argmax}{argmax}
+
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\indicator}{\mathbf{1}}
 \newcommand{\norm}[1]{\left\|#1\right\|}
 \newcommand{\KL}[2]{D\left({#1}\middle\|{#2}\right)}
+\newcommand{\grad}{\nabla}
+\newcommand{\Breg}{\mathcal{B}}
 
 \newcommand{\Cite}[1]{{\tiny \textcolor{Blue}{[#1]}}}
+
 
 \makeatletter
 \newcommand\SoulColor{%
@@ -33,7 +37,6 @@
 \let\reset@color\beamerorig@reset@color}
 \makeatother
 \setstcolor{red}
-
 
 
 \title{Parameter-Free and Scale-Free Online Algorithms}
@@ -81,28 +84,57 @@ Examples:
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Two Types of Adaptivity}
+\frametitle{FTRL and MD}
 
-\begin{enumerate}
-\item Adaptivity to competitor $u$ \qquad \textcolor{ForestGreen}{\tiny (parameter-free, quantile bounds, \dots)}
-\item Adaptivity to scale of $\ell_1, \ell_2, \dots, \ell_T$ \quad \textcolor{ForestGreen}{\tiny (scale-free, second-order bounds, \dots)}
-\end{enumerate}
+\fontsize{6.8pt}{8}\selectfont
 
-\vspace{1cm}
-
-\begin{block}{Open Problem (Informal)}
-Design efficient \textbf{doubly adaptive} algorithms.
-\end{block}
+\begin{tabular}{c|c}
+Follow The Regularized Leader & Mirror Descent \\ \hline
+\begin{minipage}{0.45\linewidth}
+\vspace{0.1cm}
+\begin{algorithmic}
+{
+\STATE Initialize $L_0 \leftarrow 0$
+\FOR{$t=1,2,3,\dots$}
+\STATE Choose a regularizer $R_t:K \to \R$
+\STATE $w_t \leftarrow \argmin_{w \in K} \langle L_{t-1}, w \rangle + R_t(w)$
+\STATE Predict $w_t$
+\STATE Observe $\ell_t \in V^*$
+\STATE $L_t \leftarrow L_{t-1} + \ell_t$
+\ENDFOR
+}
+\end{algorithmic}
+\vspace{0.1cm}
+\end{minipage}
+&
+\begin{minipage}{0.45\linewidth}
+\vspace{0.1cm}
+\begin{algorithmic}
+{
+\STATE Choose a regularizer $R_0:K \to \R$
+\STATE $w_1 \leftarrow \argmin_{w \in K} R_0(w)$
+\FOR{$t=1,2,3,\dots$}
+\STATE Predict $w_t$
+\STATE Observe $\ell_t \in V^*$
+\STATE Choose a regularizer $R_t:K \to \R$
+\STATE $w_{t+1} \leftarrow \argmin_{w \in K} \langle \ell_t, w \rangle + \Breg_{R_t}(w, w_t)$
+\ENDFOR
+}
+\end{algorithmic}
+\vspace{0.1cm}
+\end{minipage}
+\end{tabular}
 
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{FTRL Bound}
+\frametitle{FTRL/MD Bound}
 
 \begin{theorem}[\textcolor{Blue}{CBL'06, SS'11}]
-If $R:K \to \R$ is a non-negative $1$-strongly convex function w.r.t. $\norm{\cdot}$, then FTRL
-with regularizer $R$ and learning rate $\eta > 0$ satisfies
+Let $R:K \to \R$ be a non-negative $1$-strongly convex function w.r.t. $\norm{\cdot}$.
+Let $\eta > 0$ be a constant learning rate.
+FTRL with regularizer $R_t(w) = \eta R(w)$ satisfies
 $$
 \forall u \in K \qquad  \Regret_T(u) \le \frac{R(u)}{\eta} + \eta \sum_{t=1}^T \|\ell_t\|_*^2
 $$
@@ -121,5 +153,13 @@ $$}
 \end{enumerate}
 
 \end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Mirror Descent}
+
+\end{frame}
+
 
 \end{document}
