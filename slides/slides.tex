@@ -8,6 +8,7 @@
 \usepackage{tcolorbox}
 \usepackage{soul}
 \usepackage{algorithm,algorithmic}
+\usepackage{geometry}
 
 % \definecolor{red}{rgb}{1,0,0}
 
@@ -24,7 +25,7 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\indicator}{\mathbf{1}}
 \newcommand{\norm}[1]{\left\|#1\right\|}
-\newcommand{\KL}[2]{D\left({#1}\middle\|{#2}\right)}
+\newcommand{\KL}[2]{KL\left({#1}\middle\|{#2}\right)}
 \newcommand{\grad}{\nabla}
 \newcommand{\Breg}{\mathcal{B}}
 
@@ -132,9 +133,8 @@ Follow The Regularized Leader & Mirror Descent \\ \hline
 \frametitle{FTRL/MD Bound}
 
 \begin{theorem}[\textcolor{Blue}{CBL'06, SS'11}]
-Let $R:K \to \R$ be a non-negative $1$-strongly convex function w.r.t. $\norm{\cdot}$.
-Let $\eta > 0$ be a constant learning rate.
-FTRL with regularizer $R_t(w) = \eta R(w)$ satisfies
+Let $R:K \to \R$ be a non-negative $1$-strongly convex w.r.t. $\norm{\cdot}$. \\
+FTRL and MD with regularizer $R_t(w) = \frac{1}{\eta} R(w)$ satisfies
 $$
 \forall u \in K \qquad  \Regret_T(u) \le \frac{R(u)}{\eta} + \eta \sum_{t=1}^T \|\ell_t\|_*^2
 $$
@@ -157,9 +157,77 @@ $$}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Mirror Descent}
+\frametitle{Adaptive Learning Rates}
+% \framesubtitle{AdaGrad FTRL vs. AdaGrad MD}
+Let $R:K \to \R$ be $1$-strongly convex w.r.t. $\norm{\cdot}$.
+
+\vspace{0.2cm}
+
+\begin{minipage}{4cm}
+$$
+R_t(w) = \frac{1}{\eta_t} R(w)
+$$
+\end{minipage}
+%
+\begin{minipage}{5cm}
+\begin{center}
+\def\arraystretch{2}%  1 is the default, change to whatever you need
+\everymath{\displaystyle}
+\begin{tabular}{l|l}
+AdaGrad FTRL & AdaGrad MD \\ \hline
+$\eta_t = \frac{1}{\sqrt{\sum_{s=1}^{t-1} \norm{\ell_s}_*^2}}$ &  $\eta_t = \frac{1}{\sqrt{\sum_{s=1}^t \norm{\ell_s}_*^2}}$ \\
+\end{tabular}
+\end{center}
+\end{minipage}
+
+\pause
+
+\vspace{0.5cm}
+
+\begin{center}
+\fontsize{9pt}{10}\selectfont
+\begin{align*}
+\textsc{FTRL:} & & \Regret_T(u) & \le \left(2.75 + R(u)\right) \sqrt{\sum_{t=1}^T \norm{\ell_t}_*^2} + 3.5 \min \left\{ D, \sqrt{T-1} \right\} \max_{t \le T} \norm{\ell_t}_* \\
+\textsc{MD:} & & \Regret_T(u) & \le \left(1 + \sup_{v \in K} \Breg_{R}(u,v) \right) \sqrt{\sum_{t=1}^T \norm{\ell_t}_*^2}
+\end{align*}
+\end{center}
+
+\vspace{0.5cm}
+
+\pause
+
+Bound for MD is never better and it's sometimes much worse!
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{AdaGrad FTRL vs. AdaGrad MD}
+
+$$
+R(u) \qquad \text{vs.} \qquad \sup_{v \in K}\Breg_{R}(u,v)
+$$
+
+\vspace{0.5cm}
+
+WLOG \ \ $v^* = \argmin_{v \in K} R(v)$ and $R(v^*) = 0$ and $\grad R(v^*) = 0$.
+
+\vspace{0.5cm}
+
+\everymath{\displaystyle}
+\begin{enumerate}
+\item $R(u) \le \sup_{v \in K} \Breg_{R}(u,v)$
+\item $R(u)$ is always finite
+\item For some regularizers $\sup_{v \in K} \Breg_{R}(u,v) = + \infty$ for all $u \in K$
+\end{enumerate}
+
+Examples:
+\begin{align*}
+K & = \Delta_d & R(u) & = \ln d + \sum_{i=1}^d u_i \ln u_i  & \Breg_R(u,v) & = \KL{u}{v} \\
+K & = \R^d & R(u) & = \frac{1}{2}\norm{u}_2^2  & \Breg_R(u,v) & = \frac{1}{2} \norm{u - v}_2^2 \\
+\end{align*}
 
 \end{frame}
+
 
 
 \end{document}
