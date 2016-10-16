@@ -17,6 +17,7 @@
 \DeclareMathOperator*{\minimize}{minimize}
 \DeclareMathOperator*{\Exp}{\mathbf{E}}
 \DeclareMathOperator{\Regret}{Regret}
+\DeclareMathOperator{\Reward}{Reward}
 \DeclareMathOperator{\Risk}{Risk}
 \DeclareMathOperator{\polylog}{polylog}
 \DeclareMathOperator*{\argmin}{argmin}
@@ -40,7 +41,7 @@
 \setstcolor{red}
 
 
-\title{Parameter-Free and Scale-Free Online Algorithms}
+\title{Parameter-Free and Scale-Free \\ Online Algorithms}
 
 \date{November 9, 2016}
 \author{Francesco Orabona \and D\'avid P\'al}
@@ -154,11 +155,18 @@ $$}
 
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\centering
+\Huge
+\textcolor{Blue}{Scale-Free Algorithms}
+\end{frame}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Adaptive Learning Rates}
-% \framesubtitle{AdaGrad FTRL vs. AdaGrad MD}
+\frametitle{Scale-Free Learning Rates}
 Let $R:K \to \R$ be $1$-strongly convex w.r.t. $\norm{\cdot}$.
 
 \vspace{0.2cm}
@@ -173,8 +181,8 @@ $$
 \begin{center}
 \def\arraystretch{2}%  1 is the default, change to whatever you need
 \everymath{\displaystyle}
-\begin{tabular}{l|l}
-AdaGrad FTRL & AdaGrad MD \\ \hline
+\begin{tabular}{c|c}
+FTRL & MD \\ \hline
 $\eta_t = \frac{1}{\sqrt{\sum_{s=1}^{t-1} \norm{\ell_s}_*^2}}$ &  $\eta_t = \frac{1}{\sqrt{\sum_{s=1}^t \norm{\ell_s}_*^2}}$ \\
 \end{tabular}
 \end{center}
@@ -192,16 +200,16 @@ $\eta_t = \frac{1}{\sqrt{\sum_{s=1}^{t-1} \norm{\ell_s}_*^2}}$ &  $\eta_t = \fra
 \end{align*}
 \end{center}
 
-\vspace{0.5cm}
+%\vspace{0.5cm}
 
-\pause
+%\pause
 
-Bound for MD is never better and it's sometimes much worse!
+%Bound for MD is never better and it's sometimes much worse!
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{AdaGrad FTRL vs. AdaGrad MD}
+\frametitle{Comparison of Regret Bounds: FTRL and MD}
 
 $$
 R(u) \qquad \text{vs.} \qquad \sup_{v \in K}\Breg_{R}(u,v)
@@ -216,15 +224,251 @@ WLOG \ \ $v^* = \argmin_{v \in K} R(v)$ and $R(v^*) = 0$ and $\grad R(v^*) = 0$.
 \everymath{\displaystyle}
 \begin{enumerate}
 \item $R(u) \le \sup_{v \in K} \Breg_{R}(u,v)$
-\item $R(u)$ is always finite
+\item $R(u)$ is finite
 \item For some regularizers $\sup_{v \in K} \Breg_{R}(u,v) = + \infty$ for all $u \in K$
-\end{enumerate}
-
-Examples:
 \begin{align*}
-K & = \Delta_d & R(u) & = \ln d + \sum_{i=1}^d u_i \ln u_i  & \Breg_R(u,v) & = \KL{u}{v} \\
-K & = \R^d & R(u) & = \frac{1}{2}\norm{u}_2^2  & \Breg_R(u,v) & = \frac{1}{2} \norm{u - v}_2^2 \\
+K & = \Delta_d \quad & R(u) & = \ln d + \sum_{i=1}^d u_i \ln u_i  \quad & \Breg_R(u,v) & = \KL{u}{v} \\
+K & = \R^d \quad & R(u) & = \frac{1}{2}\norm{u}_2^2 \quad  & \Breg_R(u,v) & = \frac{1}{2} \norm{u - v}_2^2 \\
 \end{align*}
+
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Regret of AdaGrad is larger than $T$}
+
+One-dimensional loss vectors:
+$$
+\textcolor{ForestGreen}{\underbrace{-1, -1, \dots, -1}_{T/2},} \textcolor{Red}{\underbrace{+1, +1, \dots, +1}_{T/2}}
+$$
+
+Zinkevich = AdaGrad: \quad $\eta_t = \frac{1}{\sqrt{\sum_{s=1}^t \norm{\ell_s}_2^2}} = \frac{1}{\sqrt{t}}$
+
+\pause
+
+\vspace{0.3cm}
+
+\begin{center}
+\includegraphics[scale=0.5]{gd-lower-bound}
+\end{center}
+$$
+\Regret_T(0) = \sum_{t=1}^T w_t \ell_t = \textcolor{ForestGreen}{-\sum_{t=1}^{T/2} w_t} \quad \textcolor{Red}{+ \sum_{t={T/2+1}}^T w_t} \ge \frac{T^{3/2}}{20}
+$$
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\centering
+\Huge
+\textcolor{Blue}{Parameter-Free Algorithms}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Parameter-Freeness Problem}
+
+\begin{theorem}
+If $\norm{\ell_t}_* \le 1$ then FTRL/MD with learning rate $\eta$ satisfies
+$$
+\forall u \in K \qquad  \Regret_T(u) \le \frac{R(u)}{\eta} + \eta T \; .
+$$
+\end{theorem}
+
+\pause
+
+\vspace{0.5cm}
+
+If we choose $\eta = \sqrt{R(u)/T}$,
+$$
+\Regret_T(u) \le 2 \sqrt{R(u) T} \; .
+$$
+
+\pause
+
+\vspace{0.5cm}
+
+Is there an \textbf{single} algorithm such that
+$$
+\forall u \in K \qquad \Regret_T(u) \le 2 \sqrt{R(u) T} \quad ?
+$$
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Parameter-Freeness: Experts}
+
+$K=\Delta_N$ and $R(u) = \KL{u}{\tfrac{\textbf{1}}{N}}$
+
+\pause
+\vspace{1cm}
+
+With learning rate $\eta = \sqrt{\frac{\ln N}{T}}$
+$$
+\forall u \in \Delta_N \qquad \Regret_T(u) \le \sqrt{T \ln N}
+$$
+
+\pause
+\vspace{1cm}
+
+Ideally, we want
+$$
+\forall u \in \Delta_N \qquad
+\Regret_T(u) \le \sqrt{T \cdot \KL{u}{\tfrac{\textbf{1}}{N}}}
+$$
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Parameter-Freeness: Unconstrained Optimization}
+
+$K=\R^d$ and $R(u) = \frac{1}{2} \norm{u}_2^2$
+
+\pause
+\vspace{0.5cm}
+
+With learning rate $\eta = 1/\sqrt{T}$,
+$$
+\forall u \in \R^d  \qquad \Regret_T(u) \le \left(1 + \norm{u}_2^2 \right) \sqrt{T} \; .
+$$
+
+\pause
+\vspace{0.5cm}
+
+With learning rate $\eta = D/\sqrt{T}$,
+$$
+\forall u : \norm{u}_2 \le D \qquad  \Regret_T(u) \le D \sqrt{T} \; .
+$$
+
+\pause
+\vspace{0.5cm}
+
+Ideally, we want
+$$
+\forall u \in \R^d \qquad  \Regret_T(u) \le \norm{u} \sqrt{T} \; .
+$$
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Parameter-Free Algorithm for $\R^d$}
+
+\fontsize{10pt}{14}\selectfont
+
+Suppose $\norm{\ell_t}_2 \le 1$
+
+\vspace{1cm}
+
+\begin{tabular}{c|c}
+\begin{minipage}{4.3cm}
+\begin{algorithmic}
+{
+\STATE $L_0 \leftarrow 0$
+\STATE $W_0 \leftarrow 1$
+\FOR{$t=1,2,3,\dots$}
+\STATE $w_t \leftarrow - \frac{W_{t-1}}{t}  L_{t-1} $
+\STATE Predict $w_t$
+\STATE Observe $\ell_t \in \R^d$
+\STATE $L_t \leftarrow L_{t-1} + \ell_t$
+\STATE $W_t \leftarrow W_{t-1} - \langle \ell_t, w_t \rangle$
+\ENDFOR
+}
+\end{algorithmic}
+\end{minipage}
+&
+\pause
+\begin{minipage}{5.7cm}
+\begin{itemize}
+\item FTRL
+\begin{itemize}
+\item regularizer $R(u) = \frac{1}{2}\norm{u}_2^2$
+\item learning rate $\eta_t = \frac{W_{t-1}}{t}$
+\end{itemize}
+\item Wealth $W_t = 1 - \sum_{i=1}^t \langle \ell_t, w_t \rangle$
+\end{itemize}
+\end{minipage}
+\end{tabular}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Coin-Betting Algorithm}
+
+\fontsize{10pt}{14}\selectfont
+
+Coin flips $c_t \in \{+1,-1\}$
+
+\vspace{0.5cm}
+
+\begin{tabular}{c|c}
+\begin{minipage}{4.3cm}
+\begin{algorithmic}
+{
+\STATE $L_0 \leftarrow 0$
+\STATE $W_0 \leftarrow 1$
+\FOR{$t=1,2,3,\dots$}
+\STATE $w_t \leftarrow W_{t-1} \frac{L_{t-1}}{t} $
+\STATE Predict $w_t$
+\STATE Observe $c_t \in \{+1,-1\}$
+\STATE $L_t \leftarrow L_{t-1} + c_t$
+\STATE $W_t \leftarrow W_{t-1} + c_t w_t$
+\ENDFOR
+}
+\end{algorithmic}
+\end{minipage}
+&
+\begin{minipage}{5.7cm}
+\pause
+\begin{itemize}
+\item Wealth
+$$
+W_t = 1 + \sum_{i=1}^t c_i w_i
+$$
+
+\item Krichevski-Trofimov estimator
+$$
+\frac{L_{t-1}}{t} = \frac{\sum_{i=1}^{t-1} c_i}{t}  \in (-1,+1)
+$$
+
+\item Wealth satisfies
+$$
+W_t \ge \exp \left( T \cdot \KL{\frac{1}{2} + \frac{\sum_{t=1}^T c_t}{T}}{\frac{1}{2}} \right)
+$$
+\end{itemize}
+\end{minipage}
+\end{tabular}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Regret Bound}
+
+\begin{theorem}
+For convex function $F:K \to \R$,
+$$
+\forall u \in K \quad \Regret_T(u) \le F(u)
+\quad \Longleftrightarrow \quad
+- \underbrace{\sum_{t=1}^T \langle \ell_t, w_t}_{\Reward_T} \rangle \ge F^* \left(\sum_{t=1}^T \ell_t \right) \; .
+$$
+\end{theorem}
+\pause
+\vspace{-0.5cm}
+$$
+\underbrace{-\sum_{t=1}^T \langle \ell_t, w_t \rangle}_{\Reward_T}
+= W_t - 1
+\ge \underbrace{\exp \left( T \cdot \KL{\frac{1}{2} + \frac{\norm{\sum_{t=1}^T \ell_t}}{T}}{\frac{1}{2}} \right)}_{F^*(\sum_{t=1}^T \ell_t)}
+$$
+
+\pause
+
+\begin{theorem}
+$$
+\Regret_T(u) \le 1 + \norm{u}_2 \sqrt{T \ln\left(1 + 4T^2 \norm{u}_2^2 \right)}
+$$
+\end{theorem}
 
 \end{frame}
 
