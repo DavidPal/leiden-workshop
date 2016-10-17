@@ -69,11 +69,13 @@ For $t=1,2,\dots$
 \item suffer loss $\langle \ell_t, w_t \rangle$
 \end{itemize}
 
+\pause
 \vspace{0.3cm}
 $$
 \Regret_T(u) = \textcolor{ForestGreen}{\underbrace{\sum_{t=1}^T \langle \ell_t, w_t \rangle}_{\text{algorithm's loss}}} \ - \ \textcolor{red}{\underbrace{\sum_{t=1}^T \langle \ell_t, u \rangle}_{\text{competitor's loss}}}
 $$
 
+\pause
 \vspace{0.3cm}
 
 Examples:
@@ -141,12 +143,14 @@ $$
 $$
 \end{theorem}
 
+\pause
 \textcolor{ForestGreen}{
 With learning rate $\eta = \sqrt{R(u)/\sum_{t=1}^T \norm{\ell_t}_*^2}$
 $$
 \Regret_T(u) \le \sqrt{R(u) \sum_{t=1}^T \norm{\ell_t}_*^2}
 $$}
 
+\pause
 \textcolor{red}{Two cheats}
 \begin{enumerate}
 \item \textcolor{red}{Bound holds only for \textbf{fixed} $u$}
@@ -227,8 +231,8 @@ WLOG \ \ $v^* = \argmin_{v \in K} R(v)$ and $R(v^*) = 0$ and $\grad R(v^*) = 0$.
 \item $R(u)$ is finite
 \item For some regularizers $\sup_{v \in K} \Breg_{R}(u,v) = + \infty$ for all $u \in K$
 \begin{align*}
-K & = \Delta_d \quad & R(u) & = \ln d + \sum_{i=1}^d u_i \ln u_i  \quad & \Breg_R(u,v) & = \KL{u}{v} \\
-K & = \R^d \quad & R(u) & = \frac{1}{2}\norm{u}_2^2 \quad  & \Breg_R(u,v) & = \frac{1}{2} \norm{u - v}_2^2 \\
+K & = \Delta_N \quad & R(u) & = \ln N + \sum_{i=1}^N u_i \ln u_i  \quad & \Breg_R(u,v) & = \KL{u}{v} \\
+K & = \R^N \quad & R(u) & = \frac{1}{2}\norm{u}_2^2 \quad  & \Breg_R(u,v) & = \frac{1}{2} \norm{u - v}_2^2 \\
 \end{align*}
 
 \end{enumerate}
@@ -324,14 +328,14 @@ $$
 \begin{frame}
 \frametitle{Parameter-Freeness: Unconstrained Optimization}
 
-$K=\R^d$ and $R(u) = \frac{1}{2} \norm{u}_2^2$
+$K=\R^N$ and $R(u) = \frac{1}{2} \norm{u}_2^2$
 
 \pause
 \vspace{0.5cm}
 
 With learning rate $\eta = 1/\sqrt{T}$,
 $$
-\forall u \in \R^d  \qquad \Regret_T(u) \le \left(1 + \norm{u}_2^2 \right) \sqrt{T} \; .
+\forall u \in \R^N  \qquad \Regret_T(u) \le \left(1 + \norm{u}_2^2 \right) \sqrt{T} \; .
 $$
 
 \pause
@@ -347,13 +351,13 @@ $$
 
 Ideally, we want
 $$
-\forall u \in \R^d \qquad  \Regret_T(u) \le \norm{u} \sqrt{T} \; .
+\forall u \in \R^N \qquad  \Regret_T(u) \le \norm{u} \sqrt{T} \; .
 $$
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Parameter-Free Algorithm for $\R^d$}
+\frametitle{Parameter-Free Algorithm for $\R^N$}
 
 \fontsize{10pt}{14}\selectfont
 
@@ -370,7 +374,7 @@ Suppose $\norm{\ell_t}_2 \le 1$
 \FOR{$t=1,2,3,\dots$}
 \STATE $w_t \leftarrow - \frac{W_{t-1}}{t}  L_{t-1} $
 \STATE Predict $w_t$
-\STATE Observe $\ell_t \in \R^d$
+\STATE Observe $\ell_t \in \R^N$
 \STATE $L_t \leftarrow L_{t-1} + \ell_t$
 \STATE $W_t \leftarrow W_{t-1} - \langle \ell_t, w_t \rangle$
 \ENDFOR
@@ -386,7 +390,7 @@ Suppose $\norm{\ell_t}_2 \le 1$
 \item regularizer $R(u) = \frac{1}{2}\norm{u}_2^2$
 \item learning rate $\eta_t = \frac{W_{t-1}}{t}$
 \end{itemize}
-\item Wealth $W_t = 1 - \sum_{i=1}^t \langle \ell_t, w_t \rangle$
+\item Wealth $W_t = 1 - \sum_{i=1}^t \langle \ell_i, w_i \rangle$
 \end{itemize}
 \end{minipage}
 \end{tabular}
@@ -435,7 +439,7 @@ $$
 
 \item Wealth satisfies
 $$
-W_t \ge \exp \left( T \cdot \KL{\frac{1}{2} + \frac{\sum_{t=1}^T c_t}{T}}{\frac{1}{2}} \right)
+W_t \ge \exp \left( t \cdot \KL{\frac{1}{2} + \frac{\sum_{i=1}^t c_i}{T}}{\frac{1}{2}} \right)
 $$
 \end{itemize}
 \end{minipage}
@@ -459,7 +463,7 @@ $$
 $$
 \underbrace{-\sum_{t=1}^T \langle \ell_t, w_t \rangle}_{\Reward_T}
 = W_t - 1
-\ge \underbrace{\exp \left( T \cdot \KL{\frac{1}{2} + \frac{\norm{\sum_{t=1}^T \ell_t}}{T}}{\frac{1}{2}} \right)}_{F^*(\sum_{t=1}^T \ell_t)}
+\ge \underbrace{\exp \left( T \cdot \KL{\frac{1}{2} + \frac{\norm{\sum_{t=1}^T \ell_t}}{T}}{\frac{1}{2}} \right) - 1}_{F^*(\sum_{t=1}^T \ell_t)}
 $$
 
 \pause
@@ -472,6 +476,54 @@ $$
 
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Results for Experts}
 
+\begin{itemize}
+\item $O(N)$ time per update and $O(N)$ memory, and
+$$
+\Regret_T(u) \le \sqrt{T \cdot \left(1 + \KL{u}{\frac{\textbf{1}}{N}} \right)} \; .
+$$
+
+\item $O(N \log \log N)$ time and memory, and
+$$
+\Regret_T(u) \le \sqrt{ \sum_{t=1}^T \norm{\ell_t}_\infty^2 \cdot \left(1 + \KL{u}{\frac{\textbf{1}}{N}} \right)} \; .
+$$
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Open Problems}
+
+\begin{enumerate}
+\item For given $K$ and a norm, construct non-negative $1$-strongly convex
+function $R:K \to \R$ that minimizes
+$$
+\sup_{u \in K} R(u).
+$$
+
+\item For what $K$ and $1$-strongly convex $R:K \to \R$ can we have
+$$
+\forall u \in K \qquad \Regret_T(u) \le \sqrt{T \cdot (1 + R(u))} ?
+$$
+
+\begin{itemize}
+\item Does $K$, $R$, $\Breg_R(\cdot,\cdot)$ need to be bounded?
+\end{itemize}
+
+\item What is the trade-off for unconstrained optimization?
+
+\begin{itemize}
+\item There is \textbf{no} algorithm is simultanesouly scale-free
+and parameter-free.
+\end{itemize}
+
+\item $O(N)$ algorithm parameter-free and scale algorithm
+for experts and combinatorial optimization.
+\end{enumerate}
+
+\end{frame}
 
 \end{document}
