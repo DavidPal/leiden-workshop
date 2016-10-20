@@ -2,6 +2,7 @@
 
 \usefonttheme{serif}
 \setbeamertemplate{items}[circle]
+\setbeamertemplate{footline}[frame number]
 
 \usepackage{pxfonts}
 \usepackage{mathpazo}
@@ -9,8 +10,6 @@
 \usepackage{soul}
 \usepackage{algorithm,algorithmic}
 \usepackage{geometry}
-
-% \definecolor{red}{rgb}{1,0,0}
 
 \beamertemplatenavigationsymbolsempty
 
@@ -32,7 +31,6 @@
 
 \newcommand{\Cite}[1]{{\tiny \textcolor{Blue}{[#1]}}}
 
-
 \makeatletter
 \newcommand\SoulColor{%
 \let\set@color\beamerorig@set@color
@@ -45,7 +43,7 @@
 
 \date{November 9, 2016}
 \author{Francesco Orabona \and D\'avid P\'al}
-\institute{Stony Brook University \& Yahoo Research, New York}
+\institute{Stony Brook University \\ \& \\ Yahoo Research, New York}
 
 \begin{document}
 
@@ -90,8 +88,8 @@ Examples:
 \begin{frame}
 \frametitle{FTRL and MD}
 
-\fontsize{6.8pt}{8}\selectfont
-
+\begin{center}
+\fontsize{7pt}{8}\selectfont
 \begin{tabular}{c|c}
 Follow The Regularized Leader & Mirror Descent \\ \hline
 \begin{minipage}{0.45\linewidth}
@@ -128,6 +126,17 @@ Follow The Regularized Leader & Mirror Descent \\ \hline
 \vspace{0.1cm}
 \end{minipage}
 \end{tabular}
+\end{center}
+
+\pause
+\vspace{1cm}
+
+\fontsize{8pt}{8}\selectfont
+
+\begin{align*}
+FTRL: \qquad \Regret_T(u) & \le R_{T+1}(u) + R_1^*(0) + \sum_{t=1}^T \Breg_{R_t^*}(-L_t, -L_{t-1}) - R_t^*(-L_t) + R_{t+1}^*(-L_t) \\
+MD: \qquad \Regret_T(u) & \le \sum_{t=1}^T \langle \ell_t, w_{t} - w_{t+1} \rangle - \Breg_{R_t}(w_{t+1}, w_t) + \Breg_{R_t}(u, w_{t}) - \Breg_{R_t}(u, w_{t+1})
+\end{align*}
 
 \end{frame}
 
@@ -204,11 +213,6 @@ $\eta_t = \frac{1}{\sqrt{\sum_{s=1}^{t-1} \norm{\ell_s}_*^2}}$ &  $\eta_t = \fra
 \end{align*}
 \end{center}
 
-%\vspace{0.5cm}
-
-%\pause
-
-%Bound for MD is never better and it's sometimes much worse!
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -483,12 +487,12 @@ $$
 \begin{itemize}
 \item $O(N)$ time per update and $O(N)$ memory, and
 $$
-\Regret_T(u) \le \sqrt{T \cdot \left(1 + \KL{u}{\frac{\textbf{1}}{N}} \right)} \; .
+\Regret_T(u) \le \sqrt{T \cdot \left(1 + \KL{u}{\tfrac{\textbf{1}}{N}} \right)} \; .
 $$
 
 \item $O(N \log \log N)$ time and memory, and
 $$
-\Regret_T(u) \le \sqrt{ \sum_{t=1}^T \norm{\ell_t}_\infty^2 \cdot \left(1 + \KL{u}{\frac{\textbf{1}}{N}} \right)} \; .
+\Regret_T(u) \le \sqrt{ \sum_{t=1}^T \norm{\ell_t}_\infty^2 \cdot \left(1 + \KL{u}{\tfrac{\textbf{1}}{N}} \right)} \; .
 $$
 \end{itemize}
 \end{frame}
@@ -506,7 +510,7 @@ $$
 
 \item For what $K$ and $1$-strongly convex $R:K \to \R$ can we have
 $$
-\forall u \in K \qquad \Regret_T(u) \le \sqrt{T \cdot (1 + R(u))} ?
+\forall u \in K \qquad \Regret_T(u) \le \sqrt{T \cdot R(u)} ?
 $$
 
 \begin{itemize}
@@ -516,12 +520,12 @@ $$
 \item What is the trade-off for unconstrained optimization?
 
 \begin{itemize}
-\item There is \textbf{no} algorithm is simultanesouly scale-free
-and parameter-free.
+\item There is \textbf{no} algorithm that is simultanesouly scale-free
+and parameter-free \Cite{Cutkosky-Boahen}.
 \end{itemize}
 
-\item $O(N)$ algorithm parameter-free and scale algorithm
-for experts and combinatorial optimization.
+\item $O(N)$ time and memory, parameter-free and scale-free algorithm
+for experts (and combinatorial optimization).
 \end{enumerate}
 
 \end{frame}
