@@ -10,8 +10,11 @@
 \usepackage{natbib}
 
 % \definecolor{mainCol}{rgb}{0.878,0.707,0.769} %% background color
-% \definecolor{SectionCol}{rgb}{0.1,0.1,0.5}    %% section heading color
-\definecolor{BoxCol}{rgb}{0.66,0.25,0.95}	%% algorithm box color
+\definecolor{SectionCol}{rgb}{1.0,1.0,1.0}    %% section heading color
+%\definecolor{BoxCol}{rgb}{0.66,0.25,0.95}	%% algorithm box color
+\definecolor{BoxCol}{rgb}{0.5,0.0,0.0}
+
+
 
 \newtheorem*{theorem}{Theorem}
 \newtheorem*{lemma}{Lemma}
@@ -22,15 +25,16 @@
 \DeclareMathOperator*{\Exp}{\mathbf{E}}
 \DeclareMathOperator{\Regret}{Regret}
 \DeclareMathOperator{\Reward}{Reward}
-\DeclareMathOperator{\Risk}{Risk}
+\DeclareMathOperator{\Wealth}{Wealth}
 \DeclareMathOperator{\polylog}{polylog}
 \DeclareMathOperator*{\argmin}{argmin}
 \DeclareMathOperator*{\argmax}{argmax}
 
 \newcommand{\R}{\mathbb{R}}
+\renewcommand{\H}{\mathcal{H}}
 \newcommand{\indicator}{\mathbf{1}}
 \newcommand{\norm}[1]{\left\|#1\right\|}
-\newcommand{\KL}[2]{KL\left({#1}\middle\|{#2}\right)}
+\newcommand{\KL}[2]{\mathrm{KL}\left({#1} \, \middle\| \, {#2}\right)}
 \newcommand{\grad}{\nabla}
 \newcommand{\Breg}{\mathcal{B}}
 
@@ -38,6 +42,7 @@
 
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
 \renewcommand{\footlogo}{Typeset by pdf\LaTeX}
+%\def\hrulefill{\leavevmode\leaders\hrule height 20pt\hfill\kern\z@}
 
 \title{Parameter-Free and Scale-Free Online Algorithms}
 \author{Francesco Orabona\footnotemark[1], D\'avid P\'al\footnotemark[2]}
@@ -47,20 +52,19 @@
 
 \date{November 9, 2016}
 
-\leftlogo[1.2]{uwaterloo-uw}
+\leftlogo[1.2]{stony-brook-logo}
 \rightlogo[1.2]{yahoo-logo}
 \conference{Theoretical Foundations for Learning from Easy Data, November 7--11, 2016, Lorentz Center, University of Leiden, Leiden, Netherlands}
 
 \maketitle
 
-\setlength{\parindent}{2em}
-
-\setlength{\columnsep}{6cm}
+\setlength{\parindent}{0em}
+\setlength{\columnsep}{4cm}
 \begin{multicols}{3}
 
 \section*{Online Learning}
 
-\noindent
+%\noindent
 Non-empty closed convex \emph{decision set} $K \subseteq V$.
 
 \vspace{1cm}
@@ -69,6 +73,8 @@ Non-empty closed convex \emph{decision set} $K \subseteq V$.
 \setlength{\fboxsep}{10pt}
 \begin{center}
 Online Linear Optimization
+\vspace{0.3cm}
+
 \colorbox[rgb]{0.80,0.55,0.98}{\fbox{
 \begin{minipage}{0.8\linewidth}
 \begin{algorithmic}
@@ -96,6 +102,8 @@ $$
 \setlength{\fboxsep}{10pt}
 \begin{center}
 Follow The Regularized Leader
+\vspace{0.3cm}
+
 \colorbox[rgb]{0.80,0.55,0.98}{\fbox{
 \begin{minipage}{0.8\linewidth}
 \begin{algorithmic}
@@ -125,8 +133,8 @@ $$
 \setlength{\fboxrule}{5pt}
 \setlength{\fboxsep}{10pt}
 \begin{center}
-Mirror Descent \\
-% \vspace{0.5cm}
+Mirror Descent
+\vspace{0.3cm}
 
 \colorbox[rgb]{0.80,0.55,0.98}{\fbox{
 \begin{minipage}{0.8\linewidth}
@@ -158,7 +166,7 @@ $$
 \section*{Scale-Free Algorithms}
 
 \begin{minipage}{0.8\linewidth}
-Non-negative strongly convex $R:K \to \R$ w.r.t. $\norm{\cdot}$.
+Non-negative $\lambda$-strongly convex $R:K \to \R$ w.r.t. $\norm{\cdot}$.
 \begin{center}
 \def\arraystretch{2}%  1 is the default, change to whatever you need
 \everymath{\displaystyle}
@@ -172,14 +180,27 @@ $R_t(u) = \frac{R(u)}{\sqrt{\sum_{s=1}^{t-1} \norm{\ell_s}_*^2}}$ \hspace{1cm} &
 \begin{minipage}{1.0\linewidth}
 FTRL:
 $$
-\Regret_T(u) \le \left(2.75 + R(u)\right) \sqrt{\sum_{t=1}^T \norm{\ell_t}_*^2} + 3.5 \min \left\{ D, \sqrt{T-1} \right\} \max_{t \le T} \norm{\ell_t}_*
+\Regret_T(u) \le \left(\frac{2.75}{\lambda} + R(u)\right) \sqrt{\sum_{t=1}^T \norm{\ell_t}_*^2} + 3.5 \min \left\{ D, \frac{\sqrt{T-1}}{\lambda} \right\} \max_{t \le T} \norm{\ell_t}_*
 $$
 
 MD:
 $$
-\Regret_T(u) \le \left(1 + \sup_{v \in K} \Breg_{R}(u,v) \right) \sqrt{\sum_{t=1}^T \norm{\ell_t}_*^2}
+\Regret_T(u) \le \left(\frac{1}{\lambda} + \sup_{v \in K} \Breg_{R}(u,v) \right) \sqrt{\sum_{t=1}^T \norm{\ell_t}_*^2}
 $$
+
+If $f$ is $1$-strongly convex and $R(u) = \lambda f(u)$, optimizing $\lambda$ gives:
+\begin{align*}
+\text{FTRL:} \qquad \Regret_T & \le 13.3 \sqrt{ \sup_{v \in K} f(v) \sum_{t=1}^T \norm{\ell_t}_*^2} \\
+\text{MD:} \qquad \Regret_T & \le 2 \sqrt{ \sup_{u,v} \Breg_{f}(u,v) \sum_{t=1}^T \norm{\ell_t}_*^2}
+\end{align*}
 \end{minipage}
+
+\vspace{0.6cm}
+
+\hrule height 3pt
+
+\vspace{0.6cm}
+
 
 \begin{minipage}{1.0\linewidth}
 MD bound is much worse than FTRL bound:
@@ -190,26 +211,133 @@ WLOG assume $R(v^*) = 0$ and $\grad R(v^*) = 0$.
 \begin{itemize}
 \item $R(u) \le \sup_{v \in K} \Breg_{R}(u,v)$
 \item $R(u)$ is finite
-\item $\sup_{v \in K} \Breg_{R}(u,v) = + \infty$ for some $R$
+\item There are regularizers for which $\sup_{v \in K} \Breg_{R}(u,v) = + \infty$.
 \end{itemize}
 \end{minipage}
 
+\vspace{0.6cm}
+
+\hrule height 3pt
+
+\vspace{0.6cm}
+
+\begin{minipage}{1.0\linewidth}
+\noindent
+If $\sup_{v \in K} \Breg_{R}(u,v) = +\infty$, regret explodes.
+Mirror Descent on $K=\R$ with regularizer $R_t(u) = \frac{u^2}{2 \sqrt{\sum_{i=1}^t \ell_t^2}}$
+is the same as Gradient Descent with step size $1/\sqrt{t}$ on $K=\R$.
+On the input
+$$
+(\ell_1, \ell_2, \dots, \ell_T) = (\underbrace{-1, -1, \dots, -1}_{T/2}, \underbrace{+1, +1, \dots, +1}_{T/2})
+$$
+regret with respect to $u=0$ is $\Omega(T^{1.5})$.
+\end{minipage}
+
+\vspace{0.6cm}
+
+\hrule height 3pt
+
+\vspace{0.6cm}
+
+\begin{minipage}{1.0\linewidth}
+\noindent
+Mirror Descent on $K=\Delta_N$ with regularizer $R_t(u) = \frac{\KL{u}{\frac{\textbf{1}}{N}}}{\sqrt{\sum_{i=1}^t \norm{\ell_t}_\infty^2}}$
+on the input
+$$
+(\ell_1, \ell_2, \dots, \ell_T) = (\underbrace{-e_1, -e_1, \dots, -e_1}_{T/3}, \underbrace{-e_2, -e_2, \dots, -e_2}_{2T/3})
+$$
+regret is $\Omega(T)$.
+\end{minipage}
 
 \columnbreak
 
-\section*{Parameter-Free Algorithms}
+\section*{Parameter-Free Algorithms for Hilbert Spaces}
 
+Let $\H$ be a Hilbert space. Let $K=\H$ and assume $\norm{\ell_t} \le 1$.
+Gradient Descent with (constant) learning rate $1/\sqrt{T}$ satisfies
+$$
+\forall u \in \H \qquad \Regret_T(u) \le \frac{1}{2}(1 + \norm{u}^2) \sqrt{T} \; .
+$$
+With learning rate $D/\sqrt{T}$, it satisfies
+$$
+\forall u : \norm{u} \le D  \qquad \Regret_T(u) \le D \sqrt{T} \; .
+$$
+Can we get
+$$
+\forall u \in \H \qquad \Regret_T(u) \le \norm{u} \sqrt{T} \; ?
+$$
 
+\vspace{1cm}
 
-\section*{Open Problems}
+\begin{lemma}
+Let $\Reward_T = - \sum_{t=1}^T \langle \ell_t, w_t \rangle$.
+Let $F:K \to \R$ be convex.
+$$
+\big( \forall u \in K \qquad \Regret_T(u) \le F(u) \big)
+\quad \text{if and only if} \quad
+\Reward_T \ge F^*\left(-\sum_{t=1}^T \ell_t\right) \; .
+$$
+\end{lemma}
 
-\begin{itemize}
-\item Is the Hard Margin algorithm consistent in dimension $d \ge 2$?
+\setlength{\fboxrule}{5pt}
+\setlength{\fboxsep}{10pt}
+\begin{center}
+Coin Betting
+\vspace{0.3cm}
 
-\item At what rate can $\gamma$, as a function of $m$, decrease so that the Bucketing Algorithm remains consistent?
-We know that when $\gamma \in o(\frac{\log m}{m})$ the algorithm is inconsistent. What happens between for rates between $\frac{1}{\sqrt{m}}$
-and $\frac{\log m}{m}$.
-\end{itemize}
+\colorbox[rgb]{0.80,0.55,0.98}{\fbox{
+\begin{minipage}{0.8\linewidth}
+\begin{algorithmic}
+{
+\STATE $\Wealth_0 \leftarrow \$1$
+\FOR{$t=1,2,3,\dots$}
+\STATE $\beta_t \leftarrow \frac{1}{t} \sum_{i=1}^{t-1} c_i$ \quad (KT estimator)
+\STATE Bet $w_t = \beta_t \Wealth_{t-1}$
+\STATE Observe coin flip $c_t \in \{+1, -1\}$
+\STATE $\Wealth_t \leftarrow \Wealth_{t-1} \ + \ c_t \cdot w_t$
+\ENDFOR
+}
+\end{algorithmic}
+\end{minipage}
+}}
+\end{center}
+
+Krichevsky-Trofimov showed that
+$$
+\Wealth_T \ge \exp\left( T \cdot \KL{\frac{1}{2} + \frac{\sum_{t=1}^T c_t}{2T} }{\frac{1}{2}} \right)
+$$
+
+\vspace{0.5cm}
+
+\setlength{\fboxrule}{5pt}
+\setlength{\fboxsep}{10pt}
+\begin{center}
+Coin Betting for Hilbert Spaces
+\vspace{0.3cm}
+
+\colorbox[rgb]{0.80,0.55,0.98}{\fbox{
+\begin{minipage}{0.8\linewidth}
+\begin{algorithmic}
+{
+\STATE $L_0 \leftarrow 0$
+\STATE $\Wealth_0 \leftarrow 1$
+\FOR{$t=1,2,3,\dots$}
+\STATE Predict $w_t = - \frac{\Wealth_{t-1}}{t}  L_{t-1}$
+\STATE Observe $\ell_t \in \H$ (assume $\norm{\ell_t} \le 1$)
+\STATE $L_t \leftarrow L_{t-1} + \ell_t$
+\STATE $\Wealth_t \leftarrow \Wealth_{t-1} - \langle \ell_t, w_t \rangle$
+\ENDFOR
+}
+\end{algorithmic}
+\end{minipage}
+}}
+\end{center}
+
+Generalizing Krichevsky-Trofimov,
+$$
+1 + \Reward_T = \Wealth_T \ge \exp\left( T \cdot \KL{\frac{1}{2} + \frac{\norm{\sum_{t=1}^T \ell_t}}{2T} }{\frac{1}{2}} \right)
+$$
+Using the Lemma, we get $\Regret_T(u) \le \norm{u} \sqrt{T \ln(1 + 24 T^2 \norm{u}^2)} + 1$.
 
 \end{multicols}
 
