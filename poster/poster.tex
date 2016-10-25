@@ -9,12 +9,8 @@
 \usepackage{multicol}
 \usepackage{natbib}
 
-% \definecolor{mainCol}{rgb}{0.878,0.707,0.769} %% background color
 \definecolor{SectionCol}{rgb}{1.0,1.0,1.0}    %% section heading color
-%\definecolor{BoxCol}{rgb}{0.66,0.25,0.95}	%% algorithm box color
 \definecolor{BoxCol}{rgb}{0.5,0.0,0.0}
-
-
 
 \newtheorem*{theorem}{Theorem}
 \newtheorem*{lemma}{Lemma}
@@ -42,7 +38,6 @@
 
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
 \renewcommand{\footlogo}{Typeset by pdf\LaTeX}
-%\def\hrulefill{\leavevmode\leaders\hrule height 20pt\hfill\kern\z@}
 
 \title{Parameter-Free and Scale-Free Online Algorithms}
 \author{Francesco Orabona\footnotemark[1], D\'avid P\'al\footnotemark[2]}
@@ -64,7 +59,6 @@
 
 \section*{Online Learning}
 
-%\noindent
 Non-empty closed convex \emph{decision set} $K \subseteq V$.
 
 \vspace{1cm}
@@ -101,7 +95,7 @@ $$
 \setlength{\fboxrule}{5pt}
 \setlength{\fboxsep}{10pt}
 \begin{center}
-Follow The Regularized Leader
+Follow The Regularized Leader (FTRL)
 \vspace{0.3cm}
 
 \colorbox[rgb]{0.80,0.55,0.98}{\fbox{
@@ -133,7 +127,7 @@ $$
 \setlength{\fboxrule}{5pt}
 \setlength{\fboxsep}{10pt}
 \begin{center}
-Mirror Descent
+Mirror Descent (MD)
 \vspace{0.3cm}
 
 \colorbox[rgb]{0.80,0.55,0.98}{\fbox{
@@ -191,13 +185,13 @@ $$
 If $f$ is $1$-strongly convex and $R(u) = \lambda f(u)$, optimizing $\lambda$ gives:
 \begin{align*}
 \text{FTRL:} \qquad \Regret_T & \le 13.3 \sqrt{ \sup_{v \in K} f(v) \sum_{t=1}^T \norm{\ell_t}_*^2} \\
-\text{MD:} \qquad \Regret_T & \le 2 \sqrt{ \sup_{u,v} \Breg_{f}(u,v) \sum_{t=1}^T \norm{\ell_t}_*^2}
+\text{MD:} \qquad \Regret_T & \le 2 \sqrt{ \sup_{u,v \in K} \Breg_{f}(u,v) \sum_{t=1}^T \norm{\ell_t}_*^2}
 \end{align*}
 \end{minipage}
 
 \vspace{0.6cm}
 
-\hrule height 3pt
+\hrule height 4pt
 
 \vspace{0.6cm}
 
@@ -217,14 +211,13 @@ WLOG assume $R(v^*) = 0$ and $\grad R(v^*) = 0$.
 
 \vspace{0.6cm}
 
-\hrule height 3pt
+\hrule height 1pt
 
 \vspace{0.6cm}
 
 \begin{minipage}{1.0\linewidth}
-\noindent
 If $\sup_{v \in K} \Breg_{R}(u,v) = +\infty$, regret explodes.
-Mirror Descent on $K=\R$ with regularizer $R_t(u) = \frac{u^2}{2 \sqrt{\sum_{i=1}^t \ell_t^2}}$
+Mirror Descent on $K=\R$ with regularizer $R_t(u) = \frac{u^2}{2 \sqrt{\sum_{i=1}^t \ell_i^2}}$
 is the same as Gradient Descent with step size $1/\sqrt{t}$ on $K=\R$.
 On the input
 $$
@@ -235,13 +228,12 @@ regret with respect to $u=0$ is $\Omega(T^{1.5})$.
 
 \vspace{0.6cm}
 
-\hrule height 3pt
+\hrule height 1pt
 
 \vspace{0.6cm}
 
 \begin{minipage}{1.0\linewidth}
-\noindent
-Mirror Descent on $K=\Delta_N$ with regularizer $R_t(u) = \frac{\KL{u}{\frac{\textbf{1}}{N}}}{\sqrt{\sum_{i=1}^t \norm{\ell_t}_\infty^2}}$
+Mirror Descent on $K=\Delta_N$ with regularizer $R_t(u) = \frac{\KL{u}{\frac{\textbf{1}}{N}}}{\sqrt{\sum_{i=1}^t \norm{\ell_i}_\infty^2}}$
 on the input
 $$
 (\ell_1, \ell_2, \dots, \ell_T) = (\underbrace{-e_1, -e_1, \dots, -e_1}_{T/3}, \underbrace{-e_2, -e_2, \dots, -e_2}_{2T/3})
@@ -289,7 +281,7 @@ Coin Betting
 \begin{minipage}{0.8\linewidth}
 \begin{algorithmic}
 {
-\STATE $\Wealth_0 \leftarrow \$1$
+\STATE $\Wealth_0 \leftarrow 1$
 \FOR{$t=1,2,3,\dots$}
 \STATE $\beta_t \leftarrow \frac{1}{t} \sum_{i=1}^{t-1} c_i$ \quad (KT estimator)
 \STATE Bet $w_t = \beta_t \Wealth_{t-1}$
