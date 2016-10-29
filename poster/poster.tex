@@ -248,7 +248,7 @@ regret is $\Omega(T)$.
 Let $\H$ be a Hilbert space. Let $K=\H$ and assume $\norm{\ell_t} \le 1$.
 Gradient Descent with (constant) learning rate $1/\sqrt{T}$ satisfies
 $$
-\forall u \in \H \qquad \Regret_T(u) \le \frac{1}{2}(1 + \norm{u}^2) \sqrt{T} \; .
+\forall u \in \H \qquad \Regret_T(u) \le \frac{1}{2}\left(1 + \norm{u}^2\right) \sqrt{T} \; .
 $$
 With learning rate $D/\sqrt{T}$, it satisfies
 $$
@@ -265,7 +265,7 @@ $$
 Let $\Reward_T = - \sum_{t=1}^T \langle \ell_t, w_t \rangle$.
 Let $F:K \to \R$ be convex.
 $$
-\big( \forall u \in K \qquad \Regret_T(u) \le F(u) \big)
+\big( \forall u \in K \quad \Regret_T(u) \le F(u) \big)
 \quad \text{if and only if} \quad
 \Reward_T \ge F^*\left(-\sum_{t=1}^T \ell_t\right) \; .
 $$
