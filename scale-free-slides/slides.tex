@@ -13,6 +13,8 @@
 
 \beamertemplatenavigationsymbolsempty
 
+\newtheorem*{proposition}{Proposition}
+
 \DeclareMathOperator*{\minimize}{minimize}
 \DeclareMathOperator*{\Exp}{\mathbf{E}}
 \DeclareMathOperator{\Regret}{Regret}
@@ -39,7 +41,7 @@
 \setstcolor{red}
 
 
-\title{Parameter-Free and Scale-Free \\ Online Algorithms}
+\title{Scale-Free Online Learning}
 
 \date{November 9, 2016}
 \author{Francesco Orabona \and D\'avid P\'al}
@@ -154,33 +156,19 @@ $$
 
 \pause
 \textcolor{ForestGreen}{
-With learning rate $\eta = \sqrt{R(u)/\sum_{t=1}^T \norm{\ell_t}_*^2}$
+With learning rate $\eta = \sqrt{\sup_{v \in K} R(v)/\sum_{t=1}^T \norm{\ell_t}_*^2}$
 $$
-\Regret_T(u) \le \sqrt{R(u) \sum_{t=1}^T \norm{\ell_t}_*^2}
+\Regret_T(u) \le \sqrt{\sup_{v \in K} R(v) \sum_{t=1}^T \norm{\ell_t}_*^2}
 $$}
 
 \pause
-\textcolor{red}{Two cheats}
-\begin{enumerate}
-\item \textcolor{red}{Bound holds only for \textbf{fixed} $u$}
-\item \textcolor{red}{Need to know $\sum_{t=1}^T \norm{\ell_t}_*^2$}
-\end{enumerate}
-
+\textcolor{red}{Need to know $\sum_{t=1}^T \norm{\ell_t}_*^2$}
 \end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-\centering
-\Huge
-\textcolor{Blue}{Scale-Free Algorithms}
-\end{frame}
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 \frametitle{Scale-Free Learning Rates}
-Let $R:K \to \R$ be $1$-strongly convex w.r.t. $\norm{\cdot}$.
+Let $R:K \to \R$ be $\lambda$-strongly convex w.r.t. $\norm{\cdot}$.
 
 \vspace{0.2cm}
 
@@ -206,14 +194,73 @@ $\eta_t = \frac{1}{\sqrt{\sum_{s=1}^{t-1} \norm{\ell_s}_*^2}}$ &  $\eta_t = \fra
 \vspace{0.5cm}
 
 \begin{center}
-\fontsize{9pt}{10}\selectfont
+\fontsize{8.5pt}{10}\selectfont
 \begin{align*}
-\textsc{FTRL:} & & \Regret_T(u) & \le \left(2.75 + R(u)\right) \sqrt{\sum_{t=1}^T \norm{\ell_t}_*^2} + 3.5 \min \left\{ D, \sqrt{T-1} \right\} \max_{t \le T} \norm{\ell_t}_* \\
-\textsc{MD:} & & \Regret_T(u) & \le \left(1 + \sup_{v \in K} \Breg_{R}(u,v) \right) \sqrt{\sum_{t=1}^T \norm{\ell_t}_*^2}
+\textsc{FTRL:} & & \Regret_T(u) & \le \left( \frac{2.75}{\lambda} + R(u)\right) \sqrt{\sum_{t=1}^T \norm{\ell_t}_*^2} \ + \ 3.5 \min \left\{ D, \frac{\sqrt{T-1}}{\lambda} \right\} \max_{t \le T} \norm{\ell_t}_* \\
+\textsc{MD:} & & \Regret_T(u) & \le \left( \frac{1}{\lambda} + \sup_{v \in K} \Breg_{R}(u,v) \right) \sqrt{\sum_{t=1}^T \norm{\ell_t}_*^2}
 \end{align*}
 \end{center}
 
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Key Inequalities}
+
+\begin{lemma}
+$$
+\sum_{t=1}^T \frac{a_t^2}{\sqrt{\sum_{i=1}^t a_i^2}} \le 2 \sqrt{\sum_{t=1}^T a_t^2}
+$$
+\end{lemma}
+
+\pause
+
+\begin{lemma}
+For $C \ge 0$,
+$$
+\sum_{t=1}^T \min \left\{ \frac{a_t^2}{\sqrt{\sum_{i=1}^{t-1} a_i^2}}, \ C |a_t| \right\}
+\le 3.5 \ C \max_{t=1,2,\dots,T} |a_t| \ + \ 3.5 \sqrt{\sum_{t=1}^T a_t^2}
+$$
+\end{lemma}
+
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Bounded $K$: Optimizing $\lambda$}
+
+\fontsize{8.5pt}{10}\selectfont
+
+\begin{align*}
+\textsc{FTRL:} & & \Regret_T(u) & \le \left( \frac{2.75}{\lambda} + R(u)\right) \sqrt{\sum_{t=1}^T \norm{\ell_t}_*^2} \ + \ 3.5 \min \left\{ D, \frac{\sqrt{T-1}}{\lambda} \right\} \max_{t \le T} \norm{\ell_t}_* \\
+\textsc{MD:} & & \Regret_T(u) & \le \left( \frac{1}{\lambda} + \sup_{v \in K} \Breg_{R}(u,v) \right) \sqrt{\sum_{t=1}^T \norm{\ell_t}_*^2}
+\end{align*}
+
+\vspace{0.3cm}
+
+\pause
+Let $R(u) = \lambda \cdot f(u)$ where $f$ is non-negative $1$-strongly convex.
+
+\pause
+
+%\begin{proposition}
+\textcolor{ForestGreen}{
+$$
+D \le \sqrt{8 \sup_{v \in K} f(v)}
+$$
+}
+%\end{proposition}
+
+\pause
+
+\begin{align*}
+\textsc{FTRL:} & & \Regret_T(u) & \le 13.3 \sqrt{\sup_{v \in K} f(u) \sum_{t=1}^T \norm{\ell_t}_*^2} \\
+\textsc{MD:} & & \Regret_T(u) & \le 2 \sqrt{\sup_{u, v \in K} \Breg_{R}(u,v) \sum_{t=1}^T \norm{\ell_t}_*^2}
+\end{align*}
+\end{frame}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
@@ -267,234 +314,10 @@ $$
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\centering
-\Huge
-\textcolor{Blue}{Parameter-Free Algorithms}
-\end{frame}
+\frametitle{Regret of MD Hedge is $\Omega(T)$}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-\frametitle{Parameter-Freeness Problem}
+TODO
 
-\begin{theorem}
-If $\norm{\ell_t}_* \le 1$ then FTRL/MD with learning rate $\eta$ satisfies
-$$
-\forall u \in K \qquad  \Regret_T(u) \le \frac{R(u)}{\eta} + \eta T \; .
-$$
-\end{theorem}
-
-\pause
-
-\vspace{0.5cm}
-
-If we choose $\eta = \sqrt{R(u)/T}$,
-$$
-\Regret_T(u) \le 2 \sqrt{R(u) T} \; .
-$$
-
-\pause
-
-\vspace{0.5cm}
-
-Is there an \textbf{single} algorithm such that
-$$
-\forall u \in K \qquad \Regret_T(u) \le 2 \sqrt{R(u) T} \quad ?
-$$
-\end{frame}
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-\frametitle{Parameter-Freeness: Experts}
-
-$K=\Delta_N$ and $R(u) = \KL{u}{\tfrac{\textbf{1}}{N}}$
-
-\pause
-\vspace{1cm}
-
-With learning rate $\eta = \sqrt{\frac{\ln N}{T}}$
-$$
-\forall u \in \Delta_N \qquad \Regret_T(u) \le \sqrt{T \ln N}
-$$
-
-\pause
-\vspace{1cm}
-
-Ideally, we want
-$$
-\forall u \in \Delta_N \qquad
-\Regret_T(u) \le \sqrt{T \cdot \KL{u}{\tfrac{\textbf{1}}{N}}}
-$$
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-\frametitle{Parameter-Freeness: Unconstrained Optimization}
-
-$K=\R^N$ and $R(u) = \frac{1}{2} \norm{u}_2^2$
-
-\pause
-\vspace{0.5cm}
-
-With learning rate $\eta = 1/\sqrt{T}$,
-$$
-\forall u \in \R^N  \qquad \Regret_T(u) \le \left(1 + \norm{u}_2^2 \right) \sqrt{T} \; .
-$$
-
-\pause
-\vspace{0.5cm}
-
-With learning rate $\eta = D/\sqrt{T}$,
-$$
-\forall u : \norm{u}_2 \le D \qquad  \Regret_T(u) \le D \sqrt{T} \; .
-$$
-
-\pause
-\vspace{0.5cm}
-
-Ideally, we want
-$$
-\forall u \in \R^N \qquad  \Regret_T(u) \le \norm{u} \sqrt{T} \; .
-$$
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-\frametitle{Parameter-Free Algorithm for $\R^N$}
-
-\fontsize{10pt}{14}\selectfont
-
-Suppose $\norm{\ell_t}_2 \le 1$
-
-\vspace{1cm}
-
-\begin{tabular}{c|c}
-\begin{minipage}{4.3cm}
-\begin{algorithmic}
-{
-\STATE $L_0 \leftarrow 0$
-\STATE $W_0 \leftarrow 1$
-\FOR{$t=1,2,3,\dots$}
-\STATE $w_t \leftarrow - \frac{W_{t-1}}{t}  L_{t-1} $
-\STATE Predict $w_t$
-\STATE Observe $\ell_t \in \R^N$
-\STATE $L_t \leftarrow L_{t-1} + \ell_t$
-\STATE $W_t \leftarrow W_{t-1} - \langle \ell_t, w_t \rangle$
-\ENDFOR
-}
-\end{algorithmic}
-\end{minipage}
-&
-\pause
-\begin{minipage}{5.7cm}
-\begin{itemize}
-\item FTRL
-\begin{itemize}
-\item regularizer $R(u) = \frac{1}{2}\norm{u}_2^2$
-\item learning rate $\eta_t = \frac{W_{t-1}}{t}$
-\end{itemize}
-\item Wealth $W_t = 1 - \sum_{i=1}^t \langle \ell_i, w_i \rangle$
-\end{itemize}
-\end{minipage}
-\end{tabular}
-
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-\frametitle{Coin-Betting Algorithm}
-
-\fontsize{10pt}{14}\selectfont
-
-Coin flips $c_t \in \{+1,-1\}$
-
-\vspace{0.5cm}
-
-\begin{tabular}{c|c}
-\begin{minipage}{4.3cm}
-\begin{algorithmic}
-{
-\STATE $L_0 \leftarrow 0$
-\STATE $W_0 \leftarrow 1$
-\FOR{$t=1,2,3,\dots$}
-\STATE $w_t \leftarrow W_{t-1} \frac{L_{t-1}}{t} $
-\STATE Predict $w_t$
-\STATE Observe $c_t \in \{+1,-1\}$
-\STATE $L_t \leftarrow L_{t-1} + c_t$
-\STATE $W_t \leftarrow W_{t-1} + c_t w_t$
-\ENDFOR
-}
-\end{algorithmic}
-\end{minipage}
-&
-\begin{minipage}{5.7cm}
-\pause
-\begin{itemize}
-\item Wealth
-$$
-W_t = 1 + \sum_{i=1}^t c_i w_i
-$$
-
-\item Krichevski-Trofimov estimator
-$$
-\frac{L_{t-1}}{t} = \frac{\sum_{i=1}^{t-1} c_i}{t}  \in (-1,+1)
-$$
-
-\item Wealth satisfies
-$$
-W_t \ge \exp \left( t \cdot \KL{\frac{1}{2} + \frac{\sum_{i=1}^t c_i}{T}}{\frac{1}{2}} \right)
-$$
-\end{itemize}
-\end{minipage}
-\end{tabular}
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-\frametitle{Regret Bound}
-
-\begin{theorem}
-For convex function $F:K \to \R$,
-$$
-\forall u \in K \quad \Regret_T(u) \le F(u)
-\quad \Longleftrightarrow \quad
-- \underbrace{\sum_{t=1}^T \langle \ell_t, w_t}_{\Reward_T} \rangle \ge F^* \left(\sum_{t=1}^T \ell_t \right) \; .
-$$
-\end{theorem}
-\pause
-\vspace{-0.5cm}
-$$
-\underbrace{-\sum_{t=1}^T \langle \ell_t, w_t \rangle}_{\Reward_T}
-= W_t - 1
-\ge \underbrace{\exp \left( T \cdot \KL{\frac{1}{2} + \frac{\norm{\sum_{t=1}^T \ell_t}}{T}}{\frac{1}{2}} \right) - 1}_{F^*(\sum_{t=1}^T \ell_t)}
-$$
-
-\pause
-
-\begin{theorem}
-$$
-\Regret_T(u) \le 1 + \norm{u}_2 \sqrt{T \ln\left(1 + 4T^2 \norm{u}_2^2 \right)}
-$$
-\end{theorem}
-
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-\frametitle{Results for Experts}
-
-\begin{itemize}
-\item $O(N)$ time per update and $O(N)$ memory, and
-$$
-\Regret_T(u) \le \sqrt{T \cdot \left(1 + \KL{u}{\tfrac{\textbf{1}}{N}} \right)} \; .
-$$
-
-\item $O(N \log \log N)$ time and memory, and
-$$
-\Regret_T(u) \le \sqrt{ \sum_{t=1}^T \norm{\ell_t}_\infty^2 \cdot \left(1 + \KL{u}{\tfrac{\textbf{1}}{N}} \right)} \; .
-$$
-\end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -508,14 +331,8 @@ $$
 \sup_{u \in K} R(u).
 $$
 
-\item For what $K$ and $1$-strongly convex $R:K \to \R$ can we have
-$$
-\forall u \in K \qquad \Regret_T(u) \le \sqrt{T \cdot R(u)} ?
-$$
-
-\begin{itemize}
-\item Does $K$, $R$, $\Breg_R(\cdot,\cdot)$ need to be bounded?
-\end{itemize}
+\item $O(N)$ time and memory, parameter-free and scale-free algorithm
+for experts (and combinatorial optimization).
 
 \item What is the trade-off for unconstrained optimization?
 
@@ -524,8 +341,6 @@ $$
 and parameter-free \Cite{Cutkosky-Boahen}.
 \end{itemize}
 
-\item $O(N)$ time and memory, parameter-free and scale-free algorithm
-for experts (and combinatorial optimization).
 \end{enumerate}
 
 \end{frame}
