@@ -14,3 +14,6 @@ poster.pdf
 # Vim temporary files
 *.swp
 *.swo
+
+# MacOS temp files
+.DS_Store

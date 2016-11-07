@@ -10,6 +10,7 @@
 \usepackage{soul}
 \usepackage{algorithm,algorithmic}
 \usepackage{geometry}
+\usepackage{multirow}
 
 \beamertemplatenavigationsymbolsempty
 
@@ -229,7 +230,7 @@ $$
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Bounded $K$: Optimizing $\lambda$}
+\frametitle{Optimizing $\lambda$ for Bounded $K$}
 
 \fontsize{8.5pt}{10}\selectfont
 
@@ -316,9 +317,66 @@ $$
 \begin{frame}
 \frametitle{Regret of MD Hedge is $\Omega(T)$}
 
-TODO
+$$
+\text{Update rule:} \qquad w_{t+1,i} = \frac{1}{Z} \ w_{t,i} \cdot e^{-\eta_t \ell_{t,i}}
+$$
+
+\pause
+\vspace{1cm}
+
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+&  \multicolumn{4}{|c}{$T/3$} & \multicolumn{4}{|c|}{$2T/3$} \\
+\hline
+$\ell_{t,1}$ & $-1$ & $-1$ & $\cdots$ & $-1$ & $0$ & $0$ & $\cdots$ & $0$ \\
+\hline
+$\ell_{t,2}$ & $0$ & $0$ & $\cdots$ & $0$ & $-1$ & $-1$ & $\cdots$ & $-1$ \\
+\hline
+\end{tabular}
+
+\pause
+\vspace{1cm}
+
+$$
+\eta_t = \frac{1}{\sqrt{\sum_{i=1}^t \norm{\ell_t}_\infty^2}} = \frac{1}{\sqrt{t}}
+$$
+
+\pause
+\vspace{1cm}
+
+\textcolor{red}{
+$$
+w_{t,1} \ge 4/5 \qquad \text{for all $t \ge T/3$}
+$$
+}
 
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Conclusion}
+
+\Large
+
+Analysis of scale-free algorithms:
+\vspace{1cm}
+
+\begin{itemize}
+\item \textcolor{red}{
+Mirror Descent sucks.
+}
+
+\pause
+\vspace{0.5cm}
+
+\item
+\textcolor{ForestGreen}{
+FTRL rocks!
+}
+\end{itemize}
+
+\end{frame}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
@@ -331,14 +389,17 @@ $$
 \sup_{u \in K} R(u).
 $$
 
-\item $O(N)$ time and memory, parameter-free and scale-free algorithm
-for experts (and combinatorial optimization).
+\item $O(N)$ time and memory and scale-free algorithm
+for experts with ``quantile'' bound
 
-\item What is the trade-off for unconstrained optimization?
+\item Unconstrained optimization $K=\R^d$
 
 \begin{itemize}
+\item Scale-Free FTRL has $\Regret_T(u) \sim \norm{u}_2^{\textcolor{red}{2}}$
+\item There are algorithms with $\Regret_T(u) \sim \norm{u}_2 \sqrt{\log \norm{u}_2}$ but need $\norm{\ell_t}_2 \le 1$
 \item There is \textbf{no} algorithm that is simultanesouly scale-free
-and parameter-free \Cite{Cutkosky-Boahen}.
+and $\Regret_T(u) \sim \norm{u}_2 \polylog{\norm{u}_2}$ \ \Cite{Cutkosky-Boahen}.
+\item What are algorithms with ``good'' trade-off?
 \end{itemize}
 
 \end{enumerate}
