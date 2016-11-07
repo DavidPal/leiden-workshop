@@ -148,18 +148,18 @@ MD: \qquad \Regret_T(u) & \le \sum_{t=1}^T \langle \ell_t, w_{t} - w_{t+1} \rang
 \frametitle{FTRL/MD Bound}
 
 \begin{theorem}[\textcolor{Blue}{CBL'06, SS'11}]
-Let $R:K \to \R$ be a non-negative $1$-strongly convex w.r.t. $\norm{\cdot}$. \\
-FTRL and MD with regularizer $R_t(w) = \frac{1}{\eta} R(w)$ satisfies
+Let $f:K \to \R$ be a non-negative $1$-strongly convex w.r.t. $\norm{\cdot}$. \\
+FTRL and MD with regularizer $R_t(w) = \frac{1}{\eta} f(w)$ satisfies
 $$
-\forall u \in K \qquad  \Regret_T(u) \le \frac{R(u)}{\eta} + \eta \sum_{t=1}^T \|\ell_t\|_*^2
+\forall u \in K \qquad  \Regret_T(u) \le \frac{f(u)}{\eta} + \eta \sum_{t=1}^T \|\ell_t\|_*^2
 $$
 \end{theorem}
 
 \pause
 \textcolor{ForestGreen}{
-With learning rate $\eta = \sqrt{\sup_{v \in K} R(v)/\sum_{t=1}^T \norm{\ell_t}_*^2}$
+With learning rate $\eta = \sqrt{\frac{\sup_{v \in K} f(v)}{\sum_{t=1}^T \norm{\ell_t}_*^2}}$
 $$
-\Regret_T(u) \le \sqrt{\sup_{v \in K} R(v) \sum_{t=1}^T \norm{\ell_t}_*^2}
+\Regret_T(u) \le \sqrt{\sup_{v \in K} f(v) \sum_{t=1}^T \norm{\ell_t}_*^2}
 $$}
 
 \pause
@@ -241,7 +241,6 @@ $$
 
 \vspace{0.3cm}
 
-\pause
 Let $R(u) = \lambda \cdot f(u)$ where $f$ is non-negative $1$-strongly convex.
 
 \pause
@@ -258,7 +257,7 @@ $$
 
 \begin{align*}
 \textsc{FTRL:} & & \Regret_T(u) & \le 13.3 \sqrt{\sup_{v \in K} f(u) \sum_{t=1}^T \norm{\ell_t}_*^2} \\
-\textsc{MD:} & & \Regret_T(u) & \le 2 \sqrt{\sup_{u, v \in K} \Breg_{R}(u,v) \sum_{t=1}^T \norm{\ell_t}_*^2}
+\textsc{MD:} & & \Regret_T(u) & \le 2 \sqrt{\sup_{u, v \in K} \Breg_{f}(u,v) \sum_{t=1}^T \norm{\ell_t}_*^2}
 \end{align*}
 \end{frame}
 
@@ -268,23 +267,23 @@ $$
 \frametitle{Comparison of Regret Bounds: FTRL and MD}
 
 $$
-R(u) \qquad \text{vs.} \qquad \sup_{v \in K}\Breg_{R}(u,v)
+f(u) \qquad \text{vs.} \qquad \sup_{v \in K}\Breg_{f}(u,v)
 $$
 
 \vspace{0.5cm}
 
-WLOG \ \ $v^* = \argmin_{v \in K} R(v)$ and $R(v^*) = 0$ and $\grad R(v^*) = 0$.
+WLOG \ \ $v^* = \argmin_{v \in K} f(v)$ and $f(v^*) = 0$ and $\grad f(v^*) = 0$.
 
 \vspace{0.5cm}
 
 \everymath{\displaystyle}
 \begin{enumerate}
-\item $R(u) \le \sup_{v \in K} \Breg_{R}(u,v)$
-\item $R(u)$ is finite
-\item For some regularizers $\sup_{v \in K} \Breg_{R}(u,v) = + \infty$ for all $u \in K$
+\item $f(u) \le \sup_{v \in K} \Breg_{f}(u,v)$
+\item $f(u)$ is finite
+\item For some regularizers $\sup_{v \in K} \Breg_{f}(u,v) = + \infty$ for all $u \in K$
 \begin{align*}
-K & = \Delta_N \quad & R(u) & = \ln N + \sum_{i=1}^N u_i \ln u_i  \quad & \Breg_R(u,v) & = \KL{u}{v} \\
-K & = \R^N \quad & R(u) & = \frac{1}{2}\norm{u}_2^2 \quad  & \Breg_R(u,v) & = \frac{1}{2} \norm{u - v}_2^2 \\
+K & = \Delta_N \quad & f(u) & = \ln N + \sum_{i=1}^N u_i \ln u_i  \quad & \Breg_f(u,v) & = \KL{u}{v} \\
+K & = \R^N \quad & f(u) & = \frac{1}{2}\norm{u}_2^2 \quad  & \Breg_f(u,v) & = \frac{1}{2} \norm{u - v}_2^2 \\
 \end{align*}
 
 \end{enumerate}
@@ -353,29 +352,29 @@ $$
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-\frametitle{Conclusion}
-
-\Large
-
-Analysis of scale-free algorithms:
-\vspace{1cm}
-
-\begin{itemize}
-\item \textcolor{red}{
-Mirror Descent sucks.
-}
-
-\pause
-\vspace{0.5cm}
-
-\item
-\textcolor{ForestGreen}{
-FTRL rocks!
-}
-\end{itemize}
-
-\end{frame}
+%\begin{frame}
+%\frametitle{Conclusion}
+%
+%\Large
+%
+%Analysis of scale-free algorithms:
+%\vspace{1cm}
+%
+%\begin{itemize}
+%\item \textcolor{red}{
+%Mirror Descent sucks.
+%}
+%
+%\pause
+%\vspace{0.5cm}
+%
+%\item
+%\textcolor{ForestGreen}{
+%FTRL rocks!
+%}
+%\end{itemize}
+%
+%\end{frame}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -384,9 +383,9 @@ FTRL rocks!
 
 \begin{enumerate}
 \item For given $K$ and a norm, construct non-negative $1$-strongly convex
-function $R:K \to \R$ that minimizes
+function $f:K \to \R$ that minimizes
 $$
-\sup_{u \in K} R(u).
+\sup_{u \in K} f(u)
 $$
 
 \item $O(N)$ time and memory and scale-free algorithm
